@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+<f:metadata>
+	<f:viewAction action="#{participacaoEdit.init()}"></f:viewAction>
+	<f:viewAction action="#{manageParticipacaoOrganizador.init()}"></f:viewAction>
+	<o:viewParam name="evento"
+		value="#{manageParticipacaoOrganizador.evento}" required="true">
+		<o:viewParamValidationFailed sendError="403" />
+	</o:viewParam>
+	<o:viewParam name="evento" value="#{participacaoEdit.evento}"
+		required="true">
+		<o:viewParamValidationFailed sendError="403" />
+	</o:viewParam>
+</f:metadata>
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+	<ui:define name="content">
+		<p:tabView id="tab">
+			<p:tab title="Gerenciar">
+
+
+				<p:fieldset legend="Resultado">
+					<p:dataTable id="dataTableParticipacao" var="participacao"
+						value="#{manageParticipacaoOrganizador.participacoes}"
+						emptyMessage="Nenhum registro encontrado." rows="5"
+						paginator="true" paginatorAlwaysVisible="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" lazy="true"
+						paginatorPosition="bottom">
+
+						<p:column headerText="Ciclista">
+							<h:outputText
+								value="#{participacao.pedidoParticipacao.ciclista.pessoa.conta.login}" />
+						</p:column>
+
+						<p:column headerText="Colocação">
+							<h:outputText value="#{participacao.premiacao.colocacao}" />
+						</p:column>
+
+						<p:column headerText="Tempo">
+							<h:outputText value="#{participacao.tempoGasto}" />
+						</p:column>
+
+						<p:column headerText="Operações">
+							<p:commandButton id="editParticipacaoDialogo" value="Editar"
+								action="#{participacaoEdit.init()}"
+								oncomplete="if (!args.validationFailed) { PF('participacaoDialogo').show() }"
+								update=":participacaoDialogoId">
+								<f:setPropertyActionListener value="#{participacao}"
+									target="#{participacaoEdit.participacao}" />
+								<p:resetInput target="participacaoDialogoId" />
+							</p:commandButton>
+
+							<p:commandButton id="deleteParticipacao" value="Remover"
+								action="#{manageParticipacaoOrganizador.remover(participacao)}">
+								<p:confirm header="Confirmação!"
+									message="Você quer remover a participação ?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+
+
+						</p:column>
+
+					</p:dataTable>
+				</p:fieldset>
+			</p:tab>
+
+			<p:tab title="Cadastrar">
+				<h:form id="formCadastroParticipacao">
+					<ui:include
+						src="/WEB-INF/templates/_campos_participacao_edit.xhtml" />
+
+					<p:commandButton value="Cadastrar"
+						action="#{participacaoEdit.salvar()}" />
+				</h:form>
+			</p:tab>
+
+		</p:tabView>
+
+		<p:dialog id="participacaoDialogoId" widgetVar="participacaoDialogo"
+			header="participacao" modal="true" dynamic="true"
+			closeOnEscape="true">
+			<h:form id="formEdit">
+				<ui:include src="/WEB-INF/templates/_campos_participacao_edit.xhtml" />
+
+				<p:panelGrid columns="2" styleClass="ui-noborder">
+					<p:commandButton id="botaoSalvar"
+						action="#{participacaoEdit.salvar()}" value="Salvar"
+						update="@form"
+						oncomplete="if (!args.validationFailed) { PF('participacaoDialogo').hide(); }"
+						icon="fa fa-save" />
+					<p:commandButton id="botaoCancelar" value="Cancel"
+						onclick="PF('participacaoDialogo').hide();" icon="fa fa-remove"
+						process="@this" />
+				</p:panelGrid>
+
+				<p:defaultCommand target="formEdit:botaoSalvar" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

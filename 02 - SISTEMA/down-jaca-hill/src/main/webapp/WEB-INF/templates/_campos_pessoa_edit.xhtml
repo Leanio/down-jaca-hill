@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panelGrid columns="2">
+	
+		<p:outputLabel value="Nome" for="nome" />
+		<p:inputText id="nome" value="#{pessoaEdit.pessoa.nome}" label="Nome" required="true"/>
+
+		<p:outputLabel value="CPF" for="cpf" />
+		<p:inputMask id="cpf" value="#{pessoaEdit.pessoa.cpf}" mask="99999999999" label="CPF" required="true">
+			<f:validator validatorId="cpfValidador"/>
+		</p:inputMask>
+
+		<p:outputLabel value="Sexo" for="sexo" />
+		<p:selectOneMenu id="sexo" value="#{pessoaEdit.pessoa.sexo}" required="true" hideNoSelectionOption="true" label="Sexo">
+			<f:selectItem itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true" itemDisabled="true" />
+			<f:selectItems value="#{pessoaEdit.getSexo()}" var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+		</p:selectOneMenu>
+		
+		<p:outputLabel for="dataNascimento" value="Data de Nascimento" />
+		<ui:include src="/WEB-INF/templates/_date.xhtml">
+			<ui:param name="id" value="dataNascimento" />
+			<ui:param name="value" value="#{pessoaEdit.pessoa.dataNascimento}" />
+			<ui:param name="label" value="Data de nascimento" />
+			<ui:param name="required" value="#{true}" />
+		</ui:include>
+		
+		<p:outputLabel value="Número" for="numero" />
+		<p:inputText id="numero" value="#{pessoaEdit.pessoa.endereco.numero}" label="Número" required="true" /> 
+		
+		<p:outputLabel value="Rua" for="rua" />
+		<p:inputText id="rua" value="#{pessoaEdit.pessoa.endereco.rua}" label="Rua" required="true"/>
+		
+		<p:outputLabel value="Bairro" for="bairro" />
+		<p:inputText id="bairro" value="#{pessoaEdit.pessoa.endereco.bairro}" label="Rua" required="true"/>
+		
+		<p:outputLabel value="Complemento" for="complemento" />
+		<p:inputText id="complemento" value="#{pessoaEdit.pessoa.endereco.complemento}" label="complemento"/>
+		
+		<p:outputLabel for="estado" value="Estado" />
+		<p:selectOneMenu id="estado" value="#{pessoaEdit.estadoSelecionado}" label="Estado" required="true" filter="true" filterMatchMode="contains">
+			<f:selectItem  itemLabel="Selecione" itemValue="#{null}" itemDisabled="true" />
+			<f:selectItems value="#{pessoaEdit.getEstados()}" var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+			<p:ajax update=":formPessoaEdit:cidade" listener="#{pessoaEdit.carregarCidades()}" />
+		</p:selectOneMenu>
+
+		<p:outputLabel for="cidade" value="Cidade" />
+		<p:selectOneMenu id="cidade" value="#{pessoaEdit.pessoa.endereco.cidade}" label="Cidade" required="true" disabled="#{!pessoaEdit.estadoEstaSelecionado}" filter="true" filterMatchMode="contains">
+			<f:selectItem  itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true" itemDisabled="true" />
+			<f:selectItems value="#{pessoaEdit.getCidades()}" var="c" itemLabel="#{c.nome}" itemValue="#{c}" />
+		</p:selectOneMenu>
+		
+		<p:commandButton value="Cadastrar" action="#{pessoaEdit.salvar()}"/>
+	</p:panelGrid>
+</ui:composition>
+</html>

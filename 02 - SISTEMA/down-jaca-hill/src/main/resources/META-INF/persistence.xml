@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="dac" transaction-type="RESOURCE_LOCAL">
+
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<non-jta-data-source>java:/DAC_PostgreSQL</non-jta-data-source>
+		<!-- <non-jta-data-source>java:/DAC_MySQL</non-jta-data-source> -->
+
+		<class>br.edu.ifpb.mt.ads.dac.model.Ciclista</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Cidade</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Conta</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Endereco</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.EntidadePersistente</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Estado</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Evento</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Grupo</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.ItemRecurso</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Marca</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Modelo</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Organizador</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Pagamento</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Participacao</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.PedidoParticipacao</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Pessoa</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Premiacao</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.Recurso</class>
+		<class>br.edu.ifpb.mt.ads.dac.model.TokenRedefinicaoSenha</class>
+
+		<properties>
+
+			<!-- Configuração Hibernate -->
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+<!-- 			<property name="hibernate.show_sql" value="true" /> -->
+<!-- 			<property name="hibernate.format_sql" value="true" /> -->
+<!-- 			<property name="hibernate.use_sql_comments" value="true" /> -->
+			<!-- /Configuração Hibernate -->
+
+			<!-- Configuração Hibernate SGBD PostgreSQL -->
+			<!-- 
+			-->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
+			<property name="hibernate.default_schema" value="public" />
+			<!-- /Configuração Hibernate SGBD PostgreSQL -->
+
+			<!-- Configuração Hibernate SGBD MySQL -->
+			<!-- 
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL57InnoDBDialect" />
+			<property name="hibernate.default_catalog" value="dac" />
+			-->
+			<!-- /Configuração Hibernate SGBD MySQL -->
+		</properties>
+	</persistence-unit>
+</persistence>

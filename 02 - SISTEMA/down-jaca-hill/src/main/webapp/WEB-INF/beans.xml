@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+       http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd"
+	bean-discovery-mode="all" version="2.0">
+	<!-- 
+	 -->
+	<interceptors>
+		<class>br.edu.ifpb.mt.ads.dac.util.interceptors.impl.FlushCacheInterceptor</class>
+		<class>br.edu.ifpb.mt.ads.dac.util.interceptors.impl.TransacionalInterceptor</class>
+	</interceptors>
+	<!-- 
+	<alternatives>
+		<class>br.edu.ifpb.mt.dac.dao.impl.memory.UserInMemoryDAO</class>
+		<class>br.edu.ifpb.mt.dac.dao.impl.memory.StateInMemoryDAO</class>
+		<class>br.edu.ifpb.mt.dac.dao.impl.memory.CityInMemoryDAO</class>
+	</alternatives>
+	 -->
+</beans>

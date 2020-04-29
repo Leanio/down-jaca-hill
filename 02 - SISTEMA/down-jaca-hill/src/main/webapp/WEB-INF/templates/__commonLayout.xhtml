@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<ui:insert name="metadata"></ui:insert>
+
+<h:head>
+	<title><ui:insert name="title">Main page</ui:insert></title>
+	<h:outputScript name="locale-primefaces.js" library="js" />
+	<h:outputStylesheet name="css/primeflex/primeflex.css" />
+</h:head>
+
+<h:body>
+	<p:toolbar >
+		<p:toolbarGroup align="right">
+			<p:commandButton style="" value="Sair" action="#{logout.efetuarLogout()}" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<div class="p-grid sample-layout" style="padding-top: 5px;">
+		<div class="p-col-12 p-md-2">
+			<h:form>
+				<p:menu style="width: auto;" toggleable="true">
+					<p:menuitem value="Inicio" outcome="/paginas/protegido/index.xhtml"
+						icon="pi pi-home" />
+					<p:menuitem value="Ranking" rendered="#{menu.isContaInRole('PESSOA')}"
+						outcome="/paginas/protegido/ranking.xhtml"
+						icon="pi pi-home" />
+					<p:menuitem value="Pessoa"
+						outcome="/paginas/protegido/conta/pessoa/pessoa_edit.xhtml"
+						icon="pi pi-home" />
+					<p:menuitem value="Organizador" rendered="#{menu.isContaInRole('PESSOA')}"
+						outcome="/paginas/protegido/conta/pessoa/organizador/organizador_edit.xhtml"
+						icon="pi pi-home" />
+					<p:menuitem value="Ciclista" rendered="#{menu.isContaInRole('PESSOA')}"
+						outcome="/paginas/protegido/conta/pessoa/ciclista/ciclista_edit.xhtml"
+						icon="pi pi-home" />
+						
+						
+					<p:submenu label="Conta">
+						<p:menuitem value="Informações"
+							outcome="/paginas/protegido/conta/conta_edit.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Senha"
+							outcome="/paginas/protegido/conta/conta_edit_senha.xhtml"
+							icon="pi pi-home" />
+					</p:submenu>
+
+					<p:submenu label="Ciclista" rendered="#{menu.isContaInRole('CICLISTA')}">
+						<p:menuitem value="Pedidos" outcome="/paginas/protegido/conta/pessoa/ciclista/pedido/index.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Participações" outcome="/paginas/protegido/conta/pessoa/ciclista/pedido/participacao/index.xhtml"
+							icon="pi pi-home" />
+					</p:submenu>
+
+					<p:submenu label="Organizador" rendered="#{menu.isContaInRole('ORGANIZADOR')}">
+						<p:menuitem value="Dashboard" outcome="/paginas/protegido/conta/pessoa/organizador/dashboard.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Eventos"
+							outcome="/paginas/protegido/conta/pessoa/organizador/evento/index.xhtml" icon="pi pi-home" />
+					</p:submenu>
+
+					<p:submenu label="Administrador" rendered="#{menu.isContaInRole('ADMINISTRADOR')}">
+						<p:menuitem value="Recursos" 
+							outcome="/paginas/protegido/conta/administrador/recurso/index.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Marcas"
+							outcome="/paginas/protegido/conta/administrador/bike/marca/index.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Modelos"
+							outcome="/paginas/protegido/conta/administrador/bike/modelo/index.xhtml"
+							icon="pi pi-home" />
+						<p:menuitem value="Estados"
+							outcome="/paginas/protegido/conta/administrador/estado/index.xhtml" icon="pi pi-home" />
+						<p:menuitem value="Cidades"
+							outcome="/paginas/protegido/conta/administrador/cidade/index.xhtml" icon="pi pi-home" />
+					</p:submenu>
+
+				</p:menu>
+			</h:form>
+		</div>
+		<div class="p-col-12 p-md-10  p-col-nogutter">
+			<div class="p-col-12">
+				<div class="p-grid"
+					style="padding-top: 10px; padding-left: 10px; padding-bottom: 10px;">
+					<div id="content" style="width: 99%;">
+						<ui:include src="/WEB-INF/templates/_growl.xhtml" />
+
+						<p:confirmDialog id="confirmDialog" global="true"
+							showEffect="fade" hideEffect="fade">
+							<p:commandButton id="confirmYes" value="Sim"
+								styleClass="ui-confirmdialog-yes" icon="fa fa-remove" />
+							<p:commandButton id="confirmNo" value="Não"
+								styleClass="ui-confirmdialog-no" icon="fa fa-ban" />
+						</p:confirmDialog>
+
+						<ui:insert name="content" />
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<p:toolbar>
+		<p:toolbarGroup>
+			<p:outputLabel value="Footer" />
+		</p:toolbarGroup>
+	</p:toolbar>
+
+</h:body>
+</html>

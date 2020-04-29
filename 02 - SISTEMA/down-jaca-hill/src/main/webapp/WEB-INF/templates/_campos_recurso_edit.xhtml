@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panelGrid columns="2">
+	
+		<p:outputLabel value="Nome" for="recurso" />
+		<p:inputText id="recurso" value="#{recursoEdit.recurso.nome}" label="Estado" required="true"/>
+		
+	</p:panelGrid>
+</ui:composition>
+
+</html>

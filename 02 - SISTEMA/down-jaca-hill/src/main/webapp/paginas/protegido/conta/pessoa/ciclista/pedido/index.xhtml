@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<!-- 			<f:viewAction action="#{managePedidoParticipacaoCiclista.i}"></f:viewAction> -->
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:fieldset legend="Filtros">
+			<h:form id="formFiltroPedido">
+				<p:panelGrid columns="2">
+					<p:outputLabel value="Status" for="status" />
+					<p:selectOneMenu id="status"
+						value="#{managePedidoParticipacaoCiclista.pedidoParticipacaoFilter.estadoPedidoParticipacao}"
+						label="Status" filter="true" filterMatchMode="contains">
+
+						<f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+						<f:selectItems
+							value="#{managePedidoParticipacaoCiclista.estadosPedido}" var="s"
+							itemLabel="#{s.nome}" itemValue="#{s}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Data do pedido de" for="dataDe" />
+					<ui:include src="/WEB-INF/templates/_date.xhtml">
+						<ui:param name="id" value="dataDe" />
+						<ui:param name="value"
+							value="#{managePedidoParticipacaoCiclista.pedidoParticipacaoFilter.dataAtualizacaoEstadoDe}" />
+						<ui:param name="label" value="data ate" />
+						<ui:param name="required" value="#{false}" />
+					</ui:include>
+
+					<p:outputLabel value="Data do pedido ate" for="dataAte" />
+					<ui:include src="/WEB-INF/templates/_date.xhtml">
+						<ui:param name="id" value="dataAte" />
+						<ui:param name="value"
+							value="#{managePedidoParticipacaoCiclista.pedidoParticipacaoFilter.dataAtualizacaoEstadoAte}" />
+						<ui:param name="label" value="data de" />
+						<ui:param name="required" value="#{false}" />
+					</ui:include>
+
+					<p:commandButton value="Pesquisar"
+						action="#{managePedidoParticipacaoCiclista.filtrar()}"
+						update="dataTablePedido"></p:commandButton>
+				</p:panelGrid>
+			</h:form>
+		</p:fieldset>
+
+		<p:fieldset legend="Pedidos de participação">
+			<p:dataTable id="dataTablePedido" var="pedido"
+				value="#{managePedidoParticipacaoCiclista.pedidosParticipacao}"
+				emptyMessage="Nenhum registro encontrado." rows="5" paginator="true"
+				paginatorAlwaysVisible="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" lazy="true" paginatorPosition="bottom">
+
+				<p:column headerText="Título do evento">
+					<h:outputText value="#{pedido.evento.titulo}" />
+				</p:column>
+
+				<p:column headerText="Status">
+					<h:outputText value="#{pedido.estadoPedidoParticipacao.nome}" />
+				</p:column>
+
+				<p:column headerText="Data">
+					<h:outputText value="#{pedido.dataCadastroPedidoParticipacao}" />
+				</p:column>
+
+				<p:column headerText="Taxa">
+					<h:outputText value="#{pedido.taxaParticipacao}" />
+				</p:column>
+
+				<p:column headerText="Foi pago ?">
+					<h:outputText value="#{pedido.pagamento == null ? 'Não' : 'Sim'}" />
+				</p:column>
+
+				<p:column headerText="Operações">
+					<p:commandButton icon="pi pi-bars"></p:commandButton>
+
+					<p:commandButton id="deletePedido" icon="pi pi-trash"
+						action="#{managePedidoParticipacaoCiclista.remover(pedido)}">
+						<p:confirm header="Confirmação!"
+							message="Você quer remover pedido ?" icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</p:fieldset>
+
+	</ui:define>
+</ui:composition>
+
+</html>

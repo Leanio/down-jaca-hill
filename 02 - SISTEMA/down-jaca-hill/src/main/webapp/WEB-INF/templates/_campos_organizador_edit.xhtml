@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panelGrid columns="2">
+
+		<p:outputLabel value="RG" for="rg" />
+		<p:inputText id="rg" value="#{organizadorEdit.organizador.rg}"
+			label="RG" required="true" />
+
+		<p:commandButton value="Cadastrar"
+			action="#{organizadorEdit.salvar()}" />
+			
+		<p:commandButton id="deleteOrganizador" value="Desativar"
+			action="#{organizadorEdit.desativar()}">
+			<p:confirm header="Confirmação!"
+				message="Você quer desativar o organizador ?"
+				icon="ui-icon-alert" />
+		</p:commandButton>
+		
+	</p:panelGrid>
+</ui:composition>
+
+</html>

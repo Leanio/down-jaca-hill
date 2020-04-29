@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panelGrid columns="2" style="margin: 0 auto;">
+		<f:facet name="header">Bike</f:facet>
+		
+		<p:outputLabel for="marca" value="Marca" />
+		<p:selectOneMenu id="marca" value="#{pedidoParticipacaoEdit.marcaSelecionada}" label="Marca" required="true" filter="true" filterMatchMode="contains">
+			<f:selectItem  itemLabel="Selecione" itemValue="#{null}" itemDisabled="true" />
+			<f:selectItems value="#{pedidoParticipacaoEdit.marcas}" var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+			<p:ajax update=":formPedidoParticipacaoEdit:modelo" listener="#{pedidoParticipacaoEdit.carregarModelos()}" />
+		</p:selectOneMenu>
+
+		<p:outputLabel for="modelo" value="Modelo" />
+		<p:selectOneMenu id="modelo" value="#{pedidoParticipacaoEdit.pedidoParticipacao.modelo}" label="Modelo" required="true" disabled="#{!pedidoParticipacaoEdit.marcaEstaSelecionada}" filter="true" filterMatchMode="contains">
+			<f:selectItem  itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true" itemDisabled="true" />
+			<f:selectItems value="#{pedidoParticipacaoEdit.modelos}" var="c" itemLabel="#{c.nome}" itemValue="#{c}" />
+		</p:selectOneMenu>
+		
+	</p:panelGrid>
+	
+	<p:panelGrid columns="2">
+		<p:panelGrid columns="2">
+			<f:facet name="header">Endereço do evento</f:facet>
+			
+			<p:outputLabel for="numeroEvento" value="Número" />
+			<p:outputLabel id="numeroEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.cidade}" />
+				
+			<p:outputLabel for="ruaEvento" value="Rua" />
+			<p:outputLabel id="ruaEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.rua}" />
+				
+			<p:outputLabel for="bairroEvento" value="Bairro" />
+			<p:outputLabel id="bairroEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.bairro}" />
+				
+			<p:outputLabel for="complementoEvento" value="Complemento" />
+			<p:outputLabel id="complementoEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.complemento}" />
+	
+			<p:outputLabel for="cidadeEvento" value="Cidade" />
+			<p:outputLabel id="cidadeEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.cidade.nome}" />
+				
+			<p:outputLabel for="estadoEvento" value="Estado" />
+			<p:outputLabel id="estadoEvento" value="#{pedidoParticipacaoEdit.evento.enderecoEvento.cidade.estado.nome}" />
+				
+		</p:panelGrid>
+		
+		<p:panelGrid rendered="#{pedidoParticipacaoEdit.eventoPago}" columns="2">
+			<f:facet name="header">Endereço para pagamento</f:facet>
+			
+			<p:outputLabel for="numero" value="Número" />
+			<p:outputLabel id="numero" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.cidade}" />
+				
+			<p:outputLabel for="rua" value="Rua" />
+			<p:outputLabel id="rua" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.rua}" />
+				
+			<p:outputLabel for="bairro" value="Bairro" />
+			<p:outputLabel id="bairro" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.bairro}" />
+				
+			<p:outputLabel for="complemento" value="Complemento" />
+			<p:outputLabel id="complemento" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.complemento}" />
+	
+			<p:outputLabel for="cidade" value="Cidade" />
+			<p:outputLabel id="cidade" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.cidade.nome}" />
+				
+			<p:outputLabel for="estado" value="Estado" />
+			<p:outputLabel id="estado" value="#{pedidoParticipacaoEdit.evento.enderecoPagamento.cidade.estado.nome}" />
+				
+		</p:panelGrid>
+	</p:panelGrid>
+</ui:composition>
+
+</html>

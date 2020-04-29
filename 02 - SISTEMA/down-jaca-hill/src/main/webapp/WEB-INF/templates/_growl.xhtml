@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+
+	<p:growl id="idMessages" showDetail="true" severity="info">
+		<p:autoUpdate />
+	</p:growl>
+
+	<p:growl id="idMessagesErrors" showDetail="true" severity="error" sticky="true">
+		<p:autoUpdate />
+	</p:growl>
+
+</ui:composition>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{eventoEdit.init()}"></f:viewAction>
+			<f:viewParam name="evento" value="#{eventoEdit.evento}"></f:viewParam>
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="form">
+			<ui:include src="/WEB-INF/templates/_campos_evento_edit.xhtml" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>

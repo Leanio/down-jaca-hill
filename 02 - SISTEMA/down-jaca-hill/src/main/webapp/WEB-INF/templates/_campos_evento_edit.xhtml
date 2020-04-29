@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:wizard id="wizardEvento" backLabel="Voltar" nextLabel="Próximo">
+		<p:tab title="Informações básicas" id="tabInformacoesBasica">
+			<p:panelGrid columns="2">
+				<p:outputLabel value="Titulo" for="titulo" />
+				<p:inputText id="titulo" value="#{eventoEdit.evento.titulo}"
+					label="Titulo" required="true" />
+
+				<p:outputLabel value="Status" for="status"
+					rendered="#{eventoEdit.edicao}" />
+				<p:selectOneMenu id="status"
+					value="#{eventoEdit.evento.estadoEvento}" required="true"
+					hideNoSelectionOption="true" label="Status"
+					rendered="#{eventoEdit.edicao}">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						noSelectionOption="true" />
+					<f:selectItems value="#{eventoEdit.statusEvento}" var="s"
+						itemLabel="#{s.nome}" itemValue="#{s}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Descrição" for="descricao" />
+				<!-- 				<p:inputTextarea id="descricao" -->
+				<!-- 					value="#{eventoEdit.evento.descricao}" maxlength="1000" -->
+				<!-- 					required="true" /> -->
+
+				<p:textEditor id="descricao" widgetVar="editor"
+					value="#{eventoEdit.evento.descricao}" required="true">
+					<f:facet name="toolbar">
+						<span class="ql-formats">
+							<button class="ql-bold"></button>
+							<button class="ql-italic"></button>
+							<button class="ql-underline"></button>
+							<button class="ql-strike"></button>
+						</span>
+						<span class="ql-formats"> <select class="ql-font"></select>
+							<select class="ql-size"></select>
+						</span>
+					</f:facet>
+				</p:textEditor>
+
+				<p:outputLabel value="Quantidade de vagas" for="quantidadeVagas" />
+				<p:inputText id="quantidadeVagas"
+					value="#{eventoEdit.evento.quantidadeVagas}"
+					label="Quantidade de vagas" required="true">
+					<f:validateLongRange minimum="0" />
+				</p:inputText>
+
+				<p:outputLabel value="Taxa de participação" for="taxa" />
+				<p:inputNumber id="taxa"
+					value="#{eventoEdit.evento.taxaParticipacao}"
+					label="Taxa de participação" required="true">
+					<f:validateLongRange minimum="0" />
+					<p:ajax event="blur" update="form:gridEnderecoPagamento"
+						listener="#{eventoEdit.atribuirEnderecoPagamento()}"
+						process="@this" />
+				</p:inputNumber>
+
+				<p:outputLabel value="Distância em metros" for="distancia" />
+				<p:inputText id="distancia"
+					value="#{eventoEdit.evento.distanciaEmMetros}"
+					label="Distancia em metros" required="true">
+					<f:validateLongRange minimum="1" />
+				</p:inputText>
+
+				<p:outputLabel value="Pedido de participação de" for="pedidoDe" />
+				<ui:include src="/WEB-INF/templates/_dateTime.xhtml">
+					<ui:param name="id" value="pedidoDe" />
+					<ui:param name="value"
+						value="#{eventoEdit.evento.pedidoParticipacaoDe}" />
+					<ui:param name="label" value="Pedido de participação de" />
+					<ui:param name="required" value="#{true}" />
+				</ui:include>
+
+				<p:outputLabel value="Pedido de participação ate" for="pedidoAte" />
+				<ui:include src="/WEB-INF/templates/_dateTime.xhtml">
+					<ui:param name="id" value="pedidoAte" />
+					<ui:param name="value"
+						value="#{eventoEdit.evento.pedidoParticipacaoAte}" />
+					<ui:param name="label" value="Pedido de participação ate" />
+					<ui:param name="required" value="#{true}" />
+				</ui:include>
+
+				<p:outputLabel value="Data do evento" for="dataEvento" />
+				<ui:include src="/WEB-INF/templates/_dateTime.xhtml">
+					<ui:param name="id" value="dataEvento" />
+					<ui:param name="value" value="#{eventoEdit.evento.dataEvento}" />
+					<ui:param name="label" value="Data do evento" />
+					<ui:param name="required" value="#{true}" />
+				</ui:include>
+
+				<p:outputLabel value="Tipo do evento" for="tipoEvento" />
+				<p:selectOneMenu id="tipoEvento"
+					value="#{eventoEdit.evento.tipoEvento}" required="true"
+					hideNoSelectionOption="true" label="Tipo do evento">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						noSelectionOption="true" />
+					<f:selectItems value="#{eventoEdit.getTipoEventos()}" var="s"
+						itemLabel="#{s.nome}" itemValue="#{s}" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+		</p:tab>
+
+		<p:tab title="Benefícios" id="tabBeneficios">
+			<p:fieldset id="fieldsetRecursos" legend="Recursos do evento">
+				<p:dataTable id="dataTableRecurso" var="recurso"
+					value="#{eventoEdit.evento.itemRecurso}"
+					emptyMessage="Nenhum registro encontrado." paginatorPosition="top">
+
+					<p:column headerText="Recurso">
+						<h:outputText value="#{recurso.recurso.nome}" />
+					</p:column>
+
+					<p:column headerText="Quantidade">
+						<h:outputText value="#{recurso.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Gasto unitário">
+						<h:outputText value="#{recurso.gastoUnitario}" />
+					</p:column>
+
+					<p:column headerText="Operações">
+						<p:commandButton value="Remover"
+							action="#{eventoEdit.removerItemRecurso(recurso)}"
+							update="#{tabx}:form:dataTableRecurso" process="@this" />
+						<p:commandButton value="Editar"
+							action="#{eventoEdit.editarRecurso(recurso)}"
+							update="#{tabx}:form" process="@this" />
+					</p:column>
+				</p:dataTable>
+
+				<h:outputLabel />
+
+				<p:panelGrid columns="1" style="float: left;"
+					styleClass="ui-noborder">
+					<p:commandButton rendered="#{!eventoEdit.mostrarAdicaoRecursos()}"
+						action="#{eventoEdit.criarItemRecurso()}" update="form"
+						process="@this" value="Novo recurso" />
+				</p:panelGrid>
+
+			</p:fieldset>
+
+			<p:fieldset id="fieldsetAdicionarRecurso" legend="Adicionar recurso"
+				rendered="#{eventoEdit.mostrarAdicaoRecursos()}">
+				<p:panelGrid id="gridAdicionarRecurso" columns="2">
+					<p:outputLabel value="Recurso" for="recurso" />
+					<p:selectOneMenu id="recurso"
+						value="#{eventoEdit.itemRecurso.recurso}" label="Recurso"
+						filter="true" filterMatchMode="contains" required="true">
+						<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+							itemDisabled="true" />
+						<f:selectItems value="#{eventoEdit.recursos}" var="s"
+							itemLabel="#{s.nome}" itemValue="#{s}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Observação" for="observacao" />
+					<p:inputTextarea id="observacao"
+						value="#{eventoEdit.itemRecurso.observacao}" label="Observação" />
+
+					<p:outputLabel value="Quantidade" for="quantidade" />
+					<p:inputText id="quantidade"
+						value="#{eventoEdit.itemRecurso.quantidade}" label="Quantidade"
+						required="true">
+						<f:validateLongRange minimum="1" />
+					</p:inputText>
+
+					<p:outputLabel value="Gasto unitário" for="gastoUnitario" />
+					<p:inputNumber id="gastoUnitario"
+						value="#{eventoEdit.itemRecurso.gastoUnitario}"
+						label="Gasto unitário" required="true">
+						<f:validateLongRange minimum="0" />
+					</p:inputNumber>
+
+					<p:commandButton value="Adicionar"
+						action="#{eventoEdit.adicionarItemRecurso()}" update="form" />
+					<p:commandButton value="Cancelar"
+						action="#{eventoEdit.cancelarNovoRecurso()}" update="form"
+						process="@this" />
+
+				</p:panelGrid>
+			</p:fieldset>
+
+			<p:fieldset id="fieldsetPremiacao" legend="Premiações do evento">
+				<p:dataTable id="dataTablePremiacao" var="premiacao"
+					value="#{eventoEdit.evento.premiacao}"
+					emptyMessage="Nenhum registro encontrado." paginatorPosition="top">
+
+					<p:column headerText="Colocação">
+						<h:outputText value="#{premiacao.colocacao}" />
+					</p:column>
+
+					<p:column headerText="Valor do premio">
+						<h:outputText value="#{premiacao.valor}" />
+					</p:column>
+
+					<p:column headerText="Operações">
+						<p:commandButton value="Remover"
+							action="#{eventoEdit.removerPremiacao(premiacao)}"
+							update="#{tabx}:form:dataTablePremiacao" process="@this" />
+						<p:commandButton value="Editar"
+							action="#{eventoEdit.editarPremiacao(premiacao)}"
+							update="#{tabx}:form" process="@this" />
+					</p:column>
+				</p:dataTable>
+
+				<h:outputLabel />
+
+				<p:panelGrid columns="1" style="float: left;"
+					styleClass="ui-noborder">
+					<p:commandButton rendered="#{!eventoEdit.mostrarAdicaoPremiacao()}"
+						action="#{eventoEdit.criarPremiacao()}" update="form"
+						process="@this" value="Nova premiação" />
+				</p:panelGrid>
+			</p:fieldset>
+
+			<p:fieldset id="fieldsetAdicionarPremiacao"
+				legend="Adicionar premiação"
+				rendered="#{eventoEdit.mostrarAdicaoPremiacao()}">
+				<p:panelGrid id="gridAdicionarPremiacao" columns="2">
+
+					<p:outputLabel value="Colocação" for="colocacao" />
+					<p:inputText id="colocacao"
+						value="#{eventoEdit.premiacao.colocacao}" label="Colocação"
+						required="true">
+						<f:validateLongRange minimum="1" />
+					</p:inputText>
+
+					<p:outputLabel value="Valor do premio" for="valorPremio" />
+					<p:inputNumber id="valorPremio"
+						value="#{eventoEdit.premiacao.valor}" label="Valor do premio"
+						required="true">
+						<f:validateLongRange minimum="0" />
+					</p:inputNumber>
+
+					<p:commandButton value="Adicionar"
+						action="#{eventoEdit.adicionarPremiacao()}" update="form" />
+					<p:commandButton value="Cancelar"
+						action="#{eventoEdit.cancelarNovaPremiacao()}" update="form"
+						process="@this" />
+
+				</p:panelGrid>
+			</p:fieldset>
+		</p:tab>
+
+		<p:tab title="Endereço do evento" id="tabEndecoEvento">
+			<p:panelGrid columns="2">
+				<p:outputLabel value="Número" for="numeroPgmt" />
+				<p:inputText id="numeroPgmt"
+					value="#{eventoEdit.evento.enderecoEvento.numero}" label="Número"
+					required="true" />
+
+				<p:outputLabel value="Rua" for="ruaPgmt" />
+				<p:inputText id="ruaPgmt"
+					value="#{eventoEdit.evento.enderecoEvento.rua}" label="Rua"
+					required="true" />
+
+				<p:outputLabel value="Bairro" for="bairroPgmt" />
+				<p:inputText id="bairroPgmt"
+					value="#{eventoEdit.evento.enderecoEvento.bairro}" label="Rua"
+					required="true" />
+
+				<p:outputLabel value="Complemento" for="complementoPgmt" />
+				<p:inputText id="complementoPgmt"
+					value="#{eventoEdit.evento.enderecoEvento.complemento}"
+					label="complemento" />
+
+				<p:outputLabel for="estado" value="Estado" />
+				<p:selectOneMenu id="estado"
+					value="#{eventoEdit.estadoEventoSelecionado}" label="Estado"
+					required="true" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						itemDisabled="true" />
+					<f:selectItems value="#{eventoEdit.estados}" var="s"
+						itemLabel="#{s.nome}" itemValue="#{s}" />
+					<p:ajax update="cidade"
+						listener="#{eventoEdit.carregarCidadesEvento()}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="cidade" value="Cidade" />
+				<p:selectOneMenu id="cidade"
+					value="#{eventoEdit.evento.enderecoEvento.cidade}" label="Cidade"
+					required="true"
+					disabled="#{!eventoEdit.estadoEventoEstaSelecionado}" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						noSelectionOption="true" itemDisabled="true" />
+					<f:selectItems value="#{eventoEdit.cidadesEvento}" var="c"
+						itemLabel="#{c.nome}" itemValue="#{c}" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+		</p:tab>
+
+		<p:tab title="Endereço para pagamento" id="tabEnderecoPagamento">
+			<p:panelGrid columns="2" id="gridEnderecoPagamento"
+				rendered="#{eventoEdit.eventoPago}">
+				<p:outputLabel value="Número" for="numero" />
+				<p:inputText id="numero"
+					value="#{eventoEdit.evento.enderecoPagamento.numero}"
+					label="Número" required="true" />
+
+				<p:outputLabel value="Rua" for="rua" />
+				<p:inputText id="rua"
+					value="#{eventoEdit.evento.enderecoPagamento.rua}" label="Rua"
+					required="true" />
+
+				<p:outputLabel value="Bairro" for="bairro" />
+				<p:inputText id="bairro"
+					value="#{eventoEdit.evento.enderecoPagamento.bairro}" label="Rua"
+					required="true" />
+
+				<p:outputLabel value="Complemento" for="complemento" />
+				<p:inputText id="complemento"
+					value="#{eventoEdit.evento.enderecoPagamento.complemento}"
+					label="complemento" />
+
+				<p:outputLabel for="estadoPgmt" value="Estado" />
+				<p:selectOneMenu id="estadoPgmt"
+					value="#{eventoEdit.estadoPagamentoSelecionado}" label="Estado"
+					required="true" filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						itemDisabled="true" />
+					<f:selectItems value="#{eventoEdit.estados}" var="s"
+						itemLabel="#{s.nome}" itemValue="#{s}" />
+					<p:ajax update="cidadePgmt"
+						listener="#{eventoEdit.carregarCidadesPagamento()}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="cidadePgmt" value="Cidade" />
+				<p:selectOneMenu id="cidadePgmt"
+					value="#{eventoEdit.evento.enderecoPagamento.cidade}"
+					label="Cidade" required="true"
+					disabled="#{!eventoEdit.estadoPagamentoEstaSelecionado}"
+					filter="true" filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+						noSelectionOption="true" itemDisabled="true" />
+					<f:selectItems value="#{eventoEdit.cidadesPagamento}" var="c"
+						itemLabel="#{c.nome}" itemValue="#{c}" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+
+			<p:commandButton style="float: right;" value="Cadastrar"
+				action="#{eventoEdit.salvar()}" />
+
+		</p:tab>
+	</p:wizard>
+</ui:composition>
+
+</html>

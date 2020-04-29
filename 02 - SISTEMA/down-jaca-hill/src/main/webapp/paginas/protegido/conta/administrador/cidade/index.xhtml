@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{cidadeEdit.init()}" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:tabView id="tab">
+			<p:tab title="Gerenciar">
+				<p:fieldset legend="Filtros">
+
+					<h:form id="formFiltroCidade">
+						<p:panelGrid columns="2">
+							<p:outputLabel value="Nome" for="cidade" />
+							<p:inputText id="cidade" value="#{manageCidade.cidadeFilter.nome}" />
+							
+							<p:outputLabel value="Liberada para evento" for="liberadaParaEvento"/>
+							<p:selectOneMenu id="liberadaParaEvento" value="#{manageCidade.cidadeFilter.isLiberadaEvento}">
+								<f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+								<f:selectItem itemLabel="Sim" itemValue="#{true}" />
+								<f:selectItem itemLabel="Não" itemValue="#{false}" />
+							</p:selectOneMenu>
+							
+							<p:outputLabel value="Estado" for="estado" />
+							<p:selectOneMenu id="estado"
+								value="#{manageCidade.cidadeFilter.estado}" label="Estado"
+								filter="true" filterMatchMode="contains">
+
+								<f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+								<f:selectItems value="#{manageCidade.getEstados()}" var="s"
+									itemLabel="#{s.nome}" itemValue="#{s}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Pesquisar" action="#{manageCidade.filtrar()}" update=":tab:dataTableCidade"/>
+							<p:commandButton value="Limpar" action="#{manageCidade.criarFiltro()}" update=":tab:formFiltroCidade" process="@this" />
+					
+						</p:panelGrid>
+					</h:form>
+
+				</p:fieldset>
+
+				<p:fieldset legend="Resultado">
+					<p:dataTable id="dataTableCidade" var="cidade"
+						value="#{manageCidade.getCidades()}"
+						emptyMessage="Nenhum registro encontrado." rows="5"
+						paginator="true" paginatorAlwaysVisible="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" lazy="true" paginatorPosition="bottom">
+
+						<p:column headerText="Código">
+							<h:outputText value="#{cidade.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nome da cidade">
+							<h:outputText value="#{cidade.nome}" />
+						</p:column>
+						
+						<p:column headerText="Nome do estado">
+							<h:outputText value="#{cidade.estado.nome}" />
+						</p:column>
+
+						<p:column headerText="Liberada para evento">
+							<h:outputText value="#{cidade.isLiberadaEvento ? 'Sim' : 'Não'} " />
+						</p:column>
+
+						<p:column headerText="Operações">
+						
+							<p:commandButton id="editCidadeDialogo" value="Editar" action="#{cidadeEdit.init()}" 
+							oncomplete="if (!args.validationFailed) { PF('cidadeDialogo').show() }" update=":cidadeDialogoId">
+								<f:setPropertyActionListener value="#{cidade}" target="#{cidadeEdit.cidade}" />
+								<p:resetInput target="cidadeDialogoId" />
+							</p:commandButton>
+							
+							<p:commandButton id="deleteCidade" value="Remover" action="#{manageCidade.remover(cidade)}">
+								<p:confirm header="Confirmação!" message="Você quer remover o estado '#{cidade.nome}' ?" icon="ui-icon-alert" />
+							</p:commandButton>
+							
+						</p:column>
+
+					</p:dataTable>
+				</p:fieldset>
+			</p:tab>
+			<p:tab title="Cadastrar">
+				<h:form id="formCidadeEdit">
+					<ui:include src="/WEB-INF/templates/_campos_cidade_edit.xhtml" />
+					<p:commandButton value="Cadastrar" action="#{cidadeEdit.salvar()}" />
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+		<p:dialog id="cidadeDialogoId" widgetVar="cidadeDialogo" header="Estado" modal="true" dynamic="true" closeOnEscape="true">
+			<h:form id="formEdit">
+				<ui:include src="/WEB-INF/templates/_campos_cidade_edit.xhtml" />			
+				
+				<p:panelGrid columns="2" styleClass="ui-noborder">
+					<p:commandButton id="botaoSalvar" action="#{cidadeEdit.salvar()}" value="Salvar" update="@form" oncomplete="if (!args.validationFailed) { PF('cidadeDialogo').hide(); }" 
+						icon="fa fa-save" />
+					<p:commandButton id="botaoCancelar" value="Cancel" onclick="PF('cidadeDialogo').hide();" icon="fa fa-remove"
+						process="@this" />
+				</p:panelGrid>
+				
+				<p:defaultCommand target="formEdit:botaoSalvar" />
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

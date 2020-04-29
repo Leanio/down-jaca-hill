@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<o:viewParam name="evento"
+				value="#{managePedidoParticipacaoOrganizador.evento}"
+				required="true">
+				<o:viewParamValidationFailed sendError="403" />
+			</o:viewParam>
+
+			<f:viewAction action="#{managePedidoParticipacaoOrganizador.init()}"></f:viewAction>
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:fieldset legend="Filtros">
+			<h:form id="formFiltroPedido">
+				<p:panelGrid columns="2">
+					<p:outputLabel value="Status" for="status" />
+					<p:selectOneMenu id="status"
+						value="#{managePedidoParticipacaoOrganizador.pedidoParticipacaoFilter.estadoPedidoParticipacao}"
+						label="Status" filter="true" filterMatchMode="contains">
+
+						<f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+						<f:selectItems
+							value="#{managePedidoParticipacaoOrganizador.estadosPedido}"
+							var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Data do pedido de" for="dataDe" />
+					<ui:include src="/WEB-INF/templates/_date.xhtml">
+						<ui:param name="id" value="dataDe" />
+						<ui:param name="value" value="#{managePedidoParticipacaoOrganizador.pedidoParticipacaoFilter.dataAtualizacaoEstadoDe}" />
+						<ui:param name="label" value="data ate" />
+						<ui:param name="required" value="#{false}" />
+					</ui:include>
+
+					<p:outputLabel value="Data do pedido ate" for="dataAte" />
+					<ui:include src="/WEB-INF/templates/_date.xhtml">
+						<ui:param name="id" value="dataAte" />
+						<ui:param name="value" value="#{managePedidoParticipacaoOrganizador.pedidoParticipacaoFilter.dataAtualizacaoEstadoAte}" />
+						<ui:param name="label" value="data de" />
+						<ui:param name="required" value="#{false}" />
+					</ui:include>
+
+					<p:commandButton value="Pesquisar"
+						action="#{managePedidoParticipacaoOrganizador.filtrar()}"
+						update="dataTablePedido"></p:commandButton>
+				</p:panelGrid>
+			</h:form>
+		</p:fieldset>
+
+		<p:fieldset
+			legend="Pedidos do evento: #{managePedidoParticipacaoOrganizador.evento.titulo}">
+			<p:dataTable id="dataTablePedido" var="pedido"
+				value="#{managePedidoParticipacaoOrganizador.pedidosParticipacao}"
+				emptyMessage="Nenhum registro encontrado." rows="5" paginator="true"
+				paginatorAlwaysVisible="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" lazy="true" paginatorPosition="bottom">
+
+				<p:column headerText="Código">
+					<h:outputText value="#{pedido.codigo}" />
+				</p:column>
+
+				<p:column headerText="Ciclista">
+					<h:outputText value="#{pedido.ciclista.pessoa.conta.login}" />
+				</p:column>
+
+				<p:column headerText="Data do pedido">
+					<h:outputText value="#{pedido.dataCadastroPedidoParticipacao}" />
+				</p:column>
+
+				<p:column headerText="Taxa">
+					<h:outputText value="#{pedido.taxaParticipacao}" />
+				</p:column>
+
+				<p:column headerText="Status">
+					<h:outputText value="#{pedido.estadoPedidoParticipacao.nome}" />
+				</p:column>
+				
+				<p:column headerText="Data">
+					<h:outputText value="#{pedido.dataCadastroPedidoParticipacao}" />
+				</p:column>
+
+				<p:column headerText="Operações">
+					<p:commandButton id="editPedidoDialogo" icon="pi pi-cog"
+						action="#{pedidoParticipacaoEdit.init()}"
+						oncomplete="if (!args.validationFailed) { PF('pedidoDialogo').show() }"
+						update=":pedidoDialogoId">
+						<f:setPropertyActionListener value="#{pedido}"
+							target="#{pedidoParticipacaoEdit.pedidoParticipacao}" />
+						<p:resetInput target="pedidoDialogoId" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Pagamento"
+					rendered="#{managePedidoParticipacaoOrganizador.eventoPago}">
+					<p:commandButton id="editPgmtDialogo"
+						icon="#{pedido.pagamento == null ? 'pi pi-dollar' : 'pi pi-cog'}"
+						action="#{pagamentoEdit.init()}"
+						oncomplete="if (!args.validationFailed) { PF('pgmtDialogo').show() }"
+						update=":pgmtDialogoId">
+						<f:setPropertyActionListener value="#{pedido.pagamento}"
+							target="#{pagamentoEdit.pagamento}" />
+
+						<f:setPropertyActionListener value="#{pedido}"
+							target="#{pagamentoEdit.pedidoParticipacao}" />
+						<p:resetInput target="pgmtDialogoId" />
+
+					</p:commandButton>
+
+					<p:commandButton id="deletePagamento" icon="pi pi-trash"
+						action="#{managePagamento.remover(pedido.pagamento)}"
+						rendered="#{pedido.pagamento != null}">
+						<p:confirm header="Confirmação!"
+							message="Você quer remover o o pagamento ?" icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</p:fieldset>
+
+		<p:dialog id="pedidoDialogoId" widgetVar="pedidoDialogo"
+			header="Pedido de participação" modal="true" dynamic="true"
+			closeOnEscape="true">
+
+			<h:form id="formEdit">
+
+				<p:panelGrid columns="2">
+					<p:outputLabel value="Estado pedido" for="estadoPedido" />
+					<p:selectOneMenu id="estadoPedido"
+						value="#{pedidoParticipacaoEdit.pedidoParticipacao.estadoPedidoParticipacao}"
+						required="true" hideNoSelectionOption="true" label="Estado pedido">
+						<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+							noSelectionOption="true" itemDisabled="true" />
+						<f:selectItems value="#{pedidoParticipacaoEdit.estadoPedido()}"
+							var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="ui-noborder">
+					<p:commandButton id="botaoSalvar"
+						action="#{pedidoParticipacaoEdit.salvar()}" value="Salvar"
+						update="@form"
+						oncomplete="if (!args.validationFailed) { PF('pedidoDialogo').hide(); }"
+						icon="fa fa-save" />
+					<p:commandButton id="botaoCancelar" value="Cancel"
+						onclick="PF('pedidoDialogo').hide();" icon="fa fa-remove"
+						process="@this" />
+				</p:panelGrid>
+
+				<p:defaultCommand target="formEdit:botaoSalvar" />
+
+			</h:form>
+
+		</p:dialog>
+
+
+		<p:dialog id="pgmtDialogoId" widgetVar="pgmtDialogo"
+			header="Pedido de participação" modal="true" dynamic="true"
+			closeOnEscape="true">
+
+			<h:form id="formEditPagamento">
+
+				<p:panelGrid columns="2">
+
+					<p:outputLabel value="Meio pagamento" for="meioPagamento" />
+					<p:selectOneMenu id="meioPagamento"
+						value="#{pagamentoEdit.pagamento.meioPagamento}" required="true"
+						hideNoSelectionOption="true" label="Meio pagamento">
+						<f:selectItem itemLabel="Selecione" itemValue="#{null}"
+							noSelectionOption="true" itemDisabled="true" />
+						<f:selectItems value="#{pagamentoEdit.meiosPagamento()}" var="s"
+							itemLabel="#{s.nome}" itemValue="#{s}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Quantidade de parcelas" for="qtdParcelas" />
+					<p:spinner id="qtdParcelas" min="1" max="24"
+						value="#{pagamentoEdit.pagamento.quantidadeParcelas}"
+						required="true"></p:spinner>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="2">
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="ui-noborder">
+					<p:commandButton id="botaoSalvar"
+						action="#{pagamentoEdit.salvar()}" value="Salvar" update="@form"
+						oncomplete="if (!args.validationFailed) { PF('pgmtDialogo').hide(); }"
+						icon="fa fa-save" />
+					<p:commandButton id="botaoCancelar" value="Cancel"
+						onclick="PF('pgmtDialogo').hide();" icon="fa fa-remove"
+						process="@this" />
+				</p:panelGrid>
+
+				<p:defaultCommand target="formEdit:botaoSalvar" />
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
+</html>

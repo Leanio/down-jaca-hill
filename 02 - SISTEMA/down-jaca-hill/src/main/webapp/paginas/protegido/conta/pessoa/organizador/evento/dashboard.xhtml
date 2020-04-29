@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{chartLinePedidosAvaliadosEvento.init()}"></f:viewAction>
+			<f:viewAction action="#{chartLinePedidosEvento.init()}"></f:viewAction>
+			<f:viewAction action="#{donutPedidosEvento.init()}"></f:viewAction>
+			<o:viewParam name="evento" value="#{chartLinePedidosAvaliadosEvento.evento}" required = "true">
+				<o:viewParamValidationFailed sendError="403" />
+			</o:viewParam>
+			<o:viewParam name="evento" value="#{chartLinePedidosEvento.evento}" required = "true">
+				<o:viewParamValidationFailed sendError="403" />
+			</o:viewParam>
+			<o:viewParam name="evento" value="#{donutPedidosEvento.evento}" required = "true">
+				<o:viewParamValidationFailed sendError="403" />
+			</o:viewParam>
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:panel header="Pedidos">
+			<p:lineChart model="#{chartLinePedidosEvento.lineModel}" style="width: 100%; height: 300px;" />
+		</p:panel>
+		<p:panel header="Pedidos avaliados">
+			<p:lineChart model="#{chartLinePedidosAvaliadosEvento.lineModel}" style="width: 100%; height: 300px;"/>
+		</p:panel>
+		<p:panel header="Status dos pedidos">
+			<p:donutChart model="#{donutPedidosEvento.donutModel}" style="width: 100%; height: 200px;"/>
+		</p:panel>
+	</ui:define>
+
+</ui:composition>
+</html>

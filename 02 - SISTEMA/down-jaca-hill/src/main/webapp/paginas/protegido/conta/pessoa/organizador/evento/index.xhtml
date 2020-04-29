@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/__commonLayout.xhtml">
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{eventoEdit.init()}" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:tabView id="tabEvento">
+
+			<p:tab title="Gerenciar">
+				<p:fieldset legend="Filtros">
+					<h:form id="formFiltroEvento">
+						<p:panelGrid columns="2">
+
+							<p:outputLabel value="Titulo" />
+							<p:inputText value="#{manageEventoOrganizador.eventoFilter.titulo}" />
+							
+							<p:outputLabel for="estado" value="Estado" />
+							<p:selectOneMenu id="estado" value="#{manageEventoOrganizador.eventoFilter.estado}" label="Estado" filter="true" filterMatchMode="contains">
+								<f:selectItem  itemLabel="Selecione" itemValue="#{null}" />
+								<f:selectItems value="#{manageEventoOrganizador.estados}" var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+								<p:ajax update="tabEvento:formFiltroEvento:cidade" listener="#{manageEventoOrganizador.configurarFilter()}" />
+								<p:ajax update="tabEvento:formFiltroEvento:cidade" listener="#{manageEventoOrganizador.carregarCidades()}" />
+							</p:selectOneMenu>
+					
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:selectOneMenu id="cidade" value="#{manageEventoOrganizador.eventoFilter.cidade}" label="Cidade"  filter="true" filterMatchMode="contains" disabled="#{!manageEventoOrganizador.estadoSelecionado}">
+								<f:selectItem itemLabel="Selecione" itemValue="#{null}" itemDisabled="true" noSelectionOption="true" />
+								<f:selectItems value="#{manageEventoOrganizador.cidades}" var="c" itemLabel="#{c.nome}" itemValue="#{c}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Pesquisar"
+								update=":tabEvento:dataTableEvento"
+								action="#{manageEventoOrganizador.filtrar()}" />
+							<p:commandButton value="Limpar"
+								action="#{manageEventoOrganizador.criarFiltro()}"
+								update=":tabEvento:formFiltroEvento" process="@this" />
+
+						</p:panelGrid>
+					</h:form>
+				</p:fieldset>
+				<p:fieldset legend="Resultado">
+					<p:dataTable id="dataTableEvento" var="evento"
+						value="#{manageEventoOrganizador.eventos}"
+						emptyMessage="Nenhum registro encontrado." rows="5"
+						paginator="true" paginatorAlwaysVisible="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" lazy="true" paginatorPosition="bottom">
+
+						<p:column headerText="Código">
+							<h:outputText value="#{evento.codigo}" />
+						</p:column>
+
+						<p:column headerText="Titulo">
+							<h:outputText value="#{evento.titulo}" />
+						</p:column>
+
+						<p:column headerText="Tipo do evento">
+							<h:outputText value="#{evento.tipoEvento.nome}" />
+						</p:column>
+
+<!-- 						<p:column headerText="Cidade"> -->
+<!-- 							<h:outputText value="#{evento.enderecoEvento.cidade.nome}" /> -->
+<!-- 						</p:column> -->
+
+<!-- 						<p:column headerText="Estado"> -->
+<!-- 							<h:outputText value="#{evento.enderecoEvento.cidade.estado.nome}" /> -->
+<!-- 						</p:column> -->
+
+						<p:column headerText="Operações">
+							<p:button icon="pi pi-chart-bar" outcome="/paginas/protegido/conta/pessoa/organizador/evento/dashboard.xhtml">
+								<f:param name="evento" value="#{evento.codigo}" />
+							</p:button>
+							
+							<p:button icon="pi pi-users" outcome="/paginas/protegido/conta/pessoa/organizador/evento/pedidos_participacao.xhtml">
+								<f:param name="evento" value="#{evento.codigo}" />
+							</p:button>	
+							
+							<p:button icon="pi pi-users" outcome="/paginas/protegido/conta/pessoa/organizador/evento/participacao.xhtml">
+								<f:param name="evento" value="#{evento.codigo}" />
+							</p:button>	
+											
+							<p:button icon="pi pi-cog" outcome="/paginas/protegido/conta/pessoa/organizador/evento/evento_edit.xhtml">
+								<f:param name="evento" value="#{evento.codigo}" />
+							</p:button>
+							
+							<p:commandButton icon="pi pi-refresh" action="#{manageEventoOrganizador.atribuirVencedores(evento)}" />
+							
+							<p:commandButton id="deleteEvento" icon="pi pi-trash" action="#{manageEventoOrganizador.remover(evento)}">
+								<p:confirm header="Confirmação!" message="Você quer remover o evento '#{evento.titulo}' ?" icon="ui-icon-alert" />
+							</p:commandButton>
+
+						</p:column>
+
+					</p:dataTable>
+				</p:fieldset>
+			</p:tab>
+
+			<p:tab title="Cadastrar">
+				<h:form id="form">
+					<ui:include src="/WEB-INF/templates/_campos_evento_edit.xhtml">
+						<ui:param name="tabx" value="tabEvento" />
+					</ui:include>
+				</h:form>
+			</p:tab>
+
+		</p:tabView>
+	</ui:define>
+</ui:composition>
+
+</html>

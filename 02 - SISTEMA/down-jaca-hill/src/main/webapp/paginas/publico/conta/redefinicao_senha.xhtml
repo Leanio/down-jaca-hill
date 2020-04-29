@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:viewAction action="#{contaEditSenhaToken.init()}"></f:viewAction>
+	<f:viewParam name="token" value="#{contaEditSenhaToken.token}" ></f:viewParam>
+</f:metadata>
+
+<h:head>
+</h:head>
+
+<h:body>
+	<ui:include src="/WEB-INF/templates/_growl.xhtml" />
+
+	<h:form id="formRedefinicaoSenha">
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Nova senha" for="novaSenha" />
+			<p:password id="novaSenha" value="#{contaEditSenhaToken.novaSenhaSemHash}"
+				match="confirmacaoNovaSenha" label="Nova senha" required="true"
+				feedback="true" />
+
+			<p:outputLabel value="Confirmação da nova senha"
+				for="confirmacaoNovaSenha" />
+			<p:password id="confirmacaoNovaSenha" required="true" feedback="true" />
+
+			<p:commandButton value="Atualizar"
+				action="#{contaEditSenhaToken.atualizar()}" />
+				
+		</p:panelGrid>
+	</h:form>
+
+</h:body>
+</html>

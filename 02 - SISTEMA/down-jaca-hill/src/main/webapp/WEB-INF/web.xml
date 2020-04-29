@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	<display-name>down-jaca-hill</display-name>
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>/paginas/protegido/index.xhtml</welcome-file>
+	</welcome-file-list>
+	<context-param>
+		<param-name>primefaces.FONT_AWESOME</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>nova-light</param-value>
+		<!-- default: -->
+		<!-- <param-value>omega</param-value> -->
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/paginas/publico/400.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/paginas/protegido/403.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/paginas/publico/500.xhtml</location>
+	</error-page>
+	
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/paginas/publico/sessionTimeout.xhtml</location>
+	</error-page>
+	
+	<login-config>
+		<!-- NONE, BASIC, DIGEST, FORM, or CLIENT-CERT -->
+		<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT01227 -->
+		<auth-method>FORM</auth-method>
+		<realm-name>dacJdbcRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/paginas/publico/login.xhtml</form-login-page>
+			<form-error-page>/paginas/publico/login.xhtml?error=true</form-error-page>
+		</form-login-config>
+	</login-config>
+
+
+	<security-constraint>
+		<display-name>Páginas do administrador</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida do administrador</web-resource-name>
+			<description></description>
+			<url-pattern>/paginas/protegido/conta/administrador/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>ADMINISTRADOR</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<!-- CONFIDENTIAL, INTEGRAL, or NONE -->
+			<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT00775 -->
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<display-name>Páginas do organizador</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida do organizador</web-resource-name>
+			<description></description>
+			<url-pattern>/paginas/protegido/conta/pessoa/organizador/organizador_edit.xhtml</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>PESSOA</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<!-- CONFIDENTIAL, INTEGRAL, or NONE -->
+			<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT00775 -->
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<display-name>Páginas do organizador</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida do organizador</web-resource-name>
+			<description></description>
+			<url-pattern>/paginas/protegido/conta/pessoa/organizador/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>ORGANIZADOR</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<!-- CONFIDENTIAL, INTEGRAL, or NONE -->
+			<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT00775 -->
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<display-name>Páginas do ciclista</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida do ciclista</web-resource-name>
+			<description></description>
+			<url-pattern>/paginas/protegido/conta/pessoa/ciclista/ciclista_edit.xhtml</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>PESSOA</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<!-- CONFIDENTIAL, INTEGRAL, or NONE -->
+			<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT00775 -->
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<display-name>Páginas do ciclista</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida do ciclista</web-resource-name>
+			<description></description>
+			<url-pattern>/paginas/protegido/conta/pessoa/ciclista/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>CICLISTA</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<!-- CONFIDENTIAL, INTEGRAL, or NONE -->
+			<!-- Referência: https://docs.oracle.com/javaee/7/tutorial/security-webtier002.htm#JEETT00775 -->
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>Acesso permitido a todos usuários autenticados</display-name>
+		<web-resource-collection>
+			<web-resource-name>Área protegida que não exige autorização
+				específica</web-resource-name>
+			<description />
+			<url-pattern>/paginas/protegido/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>CONNECT</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>*</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<!-- Security roles used by this web application -->
+	<security-role>
+		<role-name>CONTA</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMINISTRADOR</role-name>
+	</security-role>
+	<security-role>
+		<role-name>PESSOA</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ORGANIZADOR</role-name>
+	</security-role>
+	<security-role>
+		<role-name>CICLISTA</role-name>
+	</security-role>
+	<security-role>
+		<role-name>*</role-name>
+	</security-role>
+
+</web-app>

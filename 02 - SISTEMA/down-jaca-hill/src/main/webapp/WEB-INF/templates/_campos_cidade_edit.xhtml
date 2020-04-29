@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panelGrid columns="2">
+	
+		<p:outputLabel value="Nome" for="cidade" />
+		<p:inputText id="cidade" value="#{cidadeEdit.cidade.nome}" label="Cidade" required="true"/>
+		
+		<p:outputLabel value="Liberada para evento" for="liberadaEvento"/>
+		<p:toggleSwitch id="liberadaEvento" value="#{cidadeEdit.cidade.isLiberadaEvento}" required="true"/>
+		
+		<p:outputLabel value="Estado" for="estado"/>
+		<p:selectOneMenu id="estado" value="#{cidadeEdit.cidade.estado}" label="Estado" required="true" filter="true" filterMatchMode="contains">
+			<f:selectItem  itemLabel="Selecione" itemValue="#{null}" itemDisabled="true" />
+			<f:selectItems value="#{cidadeEdit.getEstados()}" var="s" itemLabel="#{s.nome}" itemValue="#{s}" />
+		</p:selectOneMenu>
+		
+	</p:panelGrid>
+</ui:composition>
+
+</html>
