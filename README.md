@@ -1,6 +1,3 @@
 # down-jaca-hill
  
--Java
--JSF
--JPA
--Prime Faces
+Java, JSF, JPA e Prime Faces
